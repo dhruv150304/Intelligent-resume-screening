@@ -1,4 +1,4 @@
-# Ai Resume Analyzer
+#intelligent-resume-screening
 
 A powerful tool to screen resumes and match candidates to job descriptions efficiently.
 
@@ -187,7 +187,7 @@ The backend provides a REST API for resume analysis with two main endpoints.
   }
   ```
 
-### Endpoint 2: `/analyze_resume_files/` (File Upload)
+### Endpoint 2: `/intelligent-resume-screening-files/` (File Upload)
 
 - **Method:** `POST`
 - **URL:** `http://localhost:8000/analyze_resume_files/`
