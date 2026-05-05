@@ -275,5 +275,4 @@ if st.button("🚀 Analyze Resume", type="primary", use_container_width=True):
                 st.markdown("**Job Description Keywords:**")
                 st.write(", ".join(jd_keywords))
 
-st.markdown("---")
-st.markdown("from Hasif's Workspace")
+
