@@ -1,22 +1,6 @@
 import spacy
-import nltk
 import string
-
-def ensure_nltk_resource(resource_path, package_name):
-    """Ensure a required NLTK resource exists before app startup continues."""
-    try:
-        nltk.data.find(resource_path)
-    except LookupError:
-        print(f"NLTK resource '{package_name}' not found. Downloading...")
-        nltk.download(package_name)
-
-
-for resource_path, package_name in [
-    ("corpora/stopwords", "stopwords"),
-    ("tokenizers/punkt", "punkt"),
-    ("tokenizers/punkt_tab", "punkt_tab"),
-]:
-    ensure_nltk_resource(resource_path, package_name)
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 # Load spaCy model
 # This should have been downloaded during the setup phase (python -m spacy download en_core_web_sm)
@@ -27,8 +11,8 @@ except OSError:
     # Fallback or error if spaCy model is critical and not found
     nlp = None  # Set to None if essential and not found, functions should handle this
 
-# Get NLTK English stopwords
-stop_words = set(nltk.corpus.stopwords.words('english'))
+# Keep this local set so the app does not depend on NLTK data files at startup.
+stop_words = set(ENGLISH_STOP_WORDS)
 
 def lowercase_text(text):
     """Converts text to lowercase."""
@@ -46,10 +30,10 @@ def remove_punctuation(text):
     return text.translate(translator)
 
 def remove_stopwords_nltk(text):
-    """Removes NLTK stopwords from text."""
+    """Removes English stopwords from text without requiring NLTK data files."""
     if not isinstance(text, str):
         return ""
-    words = nltk.tokenize.word_tokenize(text)
+    words = text.split()
     filtered_words = [word for word in words if word.lower() not in stop_words]
     return " ".join(filtered_words)
 
