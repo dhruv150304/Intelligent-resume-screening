@@ -2,19 +2,21 @@ import spacy
 import nltk
 import string
 
-# Ensure NLTK resources are available (stopwords, punkt)
-# These should have been downloaded during the setup phase.
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    print("NLTK stopwords not found. Please run: python -c \"import nltk; nltk.download('stopwords')\"")
-    # As a fallback, define a minimal list or raise an error
-    # For this script, we'll assume the calling environment handles NLTK downloads.
+def ensure_nltk_resource(resource_path, package_name):
+    """Ensure a required NLTK resource exists before app startup continues."""
+    try:
+        nltk.data.find(resource_path)
+    except LookupError:
+        print(f"NLTK resource '{package_name}' not found. Downloading...")
+        nltk.download(package_name)
 
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    print("NLTK punkt not found. Please run: python -c \"import nltk; nltk.download('punkt')\"")
+
+for resource_path, package_name in [
+    ("corpora/stopwords", "stopwords"),
+    ("tokenizers/punkt", "punkt"),
+    ("tokenizers/punkt_tab", "punkt_tab"),
+]:
+    ensure_nltk_resource(resource_path, package_name)
 
 # Load spaCy model
 # This should have been downloaded during the setup phase (python -m spacy download en_core_web_sm)

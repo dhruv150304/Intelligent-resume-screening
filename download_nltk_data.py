@@ -1,9 +1,14 @@
 import nltk
 
 # Download required NLTK resources
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
-nltk.download('averaged_perceptron_tagger')
+for package in [
+    "punkt",
+    "punkt_tab",
+    "stopwords",
+    "wordnet",
+    "averaged_perceptron_tagger",
+    "averaged_perceptron_tagger_eng",
+]:
+    nltk.download(package)
 
 print("NLTK resources downloaded successfully!")
