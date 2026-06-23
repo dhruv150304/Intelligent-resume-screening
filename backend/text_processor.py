@@ -6,14 +6,14 @@ import string
 # These should have been downloaded during the setup phase.
 try:
     nltk.data.find('corpora/stopwords')
-except nltk.downloader.DownloadError:
+except LookupError:
     print("NLTK stopwords not found. Please run: python -c \"import nltk; nltk.download('stopwords')\"")
     # As a fallback, define a minimal list or raise an error
     # For this script, we'll assume the calling environment handles NLTK downloads.
 
 try:
     nltk.data.find('tokenizers/punkt')
-except nltk.downloader.DownloadError:
+except LookupError:
     print("NLTK punkt not found. Please run: python -c \"import nltk; nltk.download('punkt')\"")
 
 # Load spaCy model
