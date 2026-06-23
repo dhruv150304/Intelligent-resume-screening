@@ -5,25 +5,16 @@ import os
 # This needs to be done before attempting to import from 'backend'
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from sentence_transformers import SentenceTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 from backend.text_processor import preprocess_text  # For example usage
 
-# Load a pre-trained Sentence Transformer model
-# This is done once when the module is loaded.
-MODEL_NAME = 'all-MiniLM-L6-v2'
-try:
-    sentence_model = SentenceTransformer(MODEL_NAME)
-    print(f"Sentence Transformer model '{MODEL_NAME}' loaded successfully.")
-except Exception as e:
-    print(f"Error loading Sentence Transformer model '{MODEL_NAME}': {e}")
-    print("Semantic similarity functions may not work as expected.")
-    sentence_model = None
+# Kept for compatibility with older imports in main.py.
+sentence_model = "tfidf"
 
 def calculate_semantic_similarity(text1, text2):
     """
-    Calculates the semantic similarity between two texts using Sentence Transformers.
+    Calculates text similarity using TF-IDF cosine similarity.
     
     Args:
         text1 (str): The first text string.
@@ -33,10 +24,6 @@ def calculate_semantic_similarity(text1, text2):
         float: The cosine similarity score between the two texts (between 0 and 1).
                Returns 0.0 if an error occurs or the model is not loaded.
     """
-    if sentence_model is None:
-        print("Error: Sentence Transformer model is not loaded. Cannot calculate similarity.")
-        return 0.0
-    
     if not isinstance(text1, str) or not isinstance(text2, str):
         print("Error: Both inputs must be strings.")
         return 0.0
@@ -55,9 +42,9 @@ def calculate_semantic_similarity(text1, text2):
         return 0.0
     
     try:
-        embeddings = sentence_model.encode([text1, text2])
-        # Reshape for cosine_similarity: it expects 2D arrays
-        similarity_score = cosine_similarity(embeddings[0].reshape(1, -1), embeddings[1].reshape(1, -1))[0][0]
+        vectorizer = TfidfVectorizer(stop_words="english")
+        tfidf_matrix = vectorizer.fit_transform([text1, text2])
+        similarity_score = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
         return float(similarity_score)  # Ensure it's a standard float
     
     except Exception as e:

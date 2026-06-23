@@ -21,10 +21,6 @@ import uuid  # For generating unique request IDs
 import tempfile
 import shutil
 
-from backend.semantic_analyzer import (
-    sentence_model as global_sentence_model,
-)  # To check if model loaded
-
 # --- Logging Setup ---
 # Ensure the log file is created within the 'backend' directory, regardless of where uvicorn is run from.
 LOG_FILE_NAME = "backend_app.log"
@@ -197,18 +193,6 @@ async def analyze_resume(
         extra=log_extra,
     )
 
-    # --- Specific Error Handling ---
-    # Check for critical model loading (example for sentence_model)
-    if global_sentence_model is None:
-        logger.error(
-            "Semantic similarity model (sentence_model) is not loaded. Service unavailable.",
-            extra=log_extra,
-        )
-        raise HTTPException(
-            status_code=503,  # Service Unavailable
-            detail=f"A critical component is currently unavailable. Please try again later. Request ID: {request_id}",
-        )
-
     # Check for input length
     if (
         len(request.resume_text) > MAX_INPUT_LENGTH
@@ -297,10 +281,7 @@ async def analyze_resume(
         # Re-raise HTTPExceptions directly
         # Already logged if it's one of our custom ones above
         # If not, log it here.
-        if http_exc.status_code not in [
-            413,
-            503,
-        ]:  # Avoid re-logging specific handled cases above
+        if http_exc.status_code != 413:  # Avoid re-logging specific handled cases above
             logger.error(
                 f"HTTPException during analysis: {http_exc.status_code} - {http_exc.detail}",
                 exc_info=True,
